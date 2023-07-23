@@ -1,6 +1,12 @@
+mod components;
+mod router;
+
 use gloo::console;
-use js_sys::Date;
+use router::Route;
 use yew::{html, Component, Context, Html};
+use yew_router::prelude::*;
+
+use crate::components::header::Navbar;
 
 // Define the possible messages which can be sent to the component
 pub enum Msg {
@@ -36,13 +42,41 @@ impl Component for App {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let text = "hello";
         html! {
-            text
+        <BrowserRouter>
+            <Switch<Route> render={route} />
+            {add_bootstrap()}
+        </BrowserRouter>
         }
+    }
+}
+
+fn route(routes: Route) -> Html {
+    html! {
+            <>
+            <Navbar active_page={routes}/>
+            {body(routes)}
+            </>
+    }
+}
+
+fn body(routes: Route) -> Html {
+    match routes {
+        Route::Home => html! {"home"},
+        Route::Rust => html! {"rust"},
+        Route::Me => html! {"me"},
+        Route::Daddy => html! {"daddy"},
+        Route::Test => html! {"test"},
+        Route::NotFound => html! {"not found"},
     }
 }
 
 fn main() {
     yew::Renderer::<App>::new().render();
+}
+
+fn add_bootstrap() -> Html {
+    html! {
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    }
 }
