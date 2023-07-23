@@ -1,46 +1,46 @@
-use yew::{function_component, html, Html, Properties};
+use yew::{function_component, html, Callback, Html, Properties};
+use yew_router::prelude::{use_navigator, use_route};
 
 use crate::router::Route;
 
-#[derive(Properties, PartialEq)]
-pub struct NavbarProps {
-    pub active_page: Route,
-}
-
-#[derive(Properties, PartialEq)]
-pub struct NavlinkProps {
-
-}
-
 #[function_component]
-pub fn Navbar(props: &NavbarProps) -> Html {
+pub fn Navbar() -> Html {
     html! {
     <div class="container">
       <header class="d-flex justify-content-center py-3">
         <ul class="nav nav-pills">
-          <li class="nav-item">
-            <a href="/" class="nav-link active" aria-current={active_page(props.active_page, Route::Home)} >{"Home"}</a>
-          </li>
-          <li class="nav-item"><a href="/rust" class="nav-link active" aria-current={active_page(props.active_page, Route::Home)} >{"Rust"}</a></li>
-          <li class="nav-item"><a href="/me" class="nav-link">{"me"}</a></li>
-          <li class="nav-item"><a href="/daddy" class="nav-link">{"daddy"}</a></li>
-          <li class="nav-item"><a href="/test" class="nav-link">{"test"}</a></li>
+          <Navlink name="Home" route={Route::Home}/>
+          <Navlink name="Rust" route={Route::Rust}/>
+          <Navlink name="Me" route={Route::Me}/>
+          <Navlink name="Daddy" route={Route::Daddy}/>
+          <Navlink name="test" route={Route::Test}/>
         </ul>
       </header>
     </div>
     }
 }
 
-#[function_component]
-pub fn Navlink(props: &NavlinkProps) -> Html {
-    html! {
-    }
+#[derive(Properties, PartialEq)]
+pub struct NavlinkProps {
+    pub name: String,
+    pub route: Route,
 }
 
-fn active_page(active_page: Route, page: Route) -> String {
-    if active_page == page {
-        "\"page\"".to_owned()
+#[function_component]
+pub fn Navlink(props: &NavlinkProps) -> Html {
+    let current_route = use_route::<Route>().unwrap_or_default();
+    let navigator = use_navigator().unwrap();
+
+    let class = if current_route == props.route {
+        "nav-link active"
     } else {
-        "\"false\"".to_owned()
+        "nav-link"
+    };
+
+    let route = props.route.clone();
+    let onclick = Callback::from(move |_| navigator.push(&route));
+
+    html! {
+        <li class="nav-item"><button {onclick} class={class}>{&props.name}</button></li>
     }
 }

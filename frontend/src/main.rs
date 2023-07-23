@@ -53,10 +53,10 @@ impl Component for App {
 
 fn route(routes: Route) -> Html {
     html! {
-            <>
-            <Navbar active_page={routes}/>
-            {body(routes)}
-            </>
+        <>
+        <Navbar/>
+        {body(routes)}
+        </>
     }
 }
 
